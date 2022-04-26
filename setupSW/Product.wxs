@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+	 xmlns:fwrules="http://schemas.microsoft.com/wix/FirewallExtension"
+	 xmlns:depend="http://schemas.microsoft.com/wix/ServiceDependency">
+	<Product Id="*" Name="IMCWeightService" Language="1033" Version="1.0.0.0" Manufacturer=" IMC roda" UpgradeCode="be8d4bf2-9d1b-410c-b204-4f723ea9a594">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of IMCWEIGHT is already installed." />
+		<MediaTemplate  EmbedCab="yes"/>
+
+		<Feature Id="ProductFeature" Title="IMCWeightService" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+		<Icon Id="imc.ico" SourceFile="D:\IMCWEIGHT_S\myservice\myservice\imc.ico"/>
+		<Property Id="ARPPRODUCTICON" Value="imc.ico" />
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="IMCWeightService" />
+			</Directory>
+		</Directory>
+	</Fragment>
+	
+	
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+			<Component Id="cmp1F628E6E1F2340F1B045287895BA90F8">
+				<File Name="Newtonsoft.Json.dll" Source="D:\IMCWEIGHT_S\myservice\myservice\bin\Release\Newtonsoft.Json.dll"/>
+			</Component>
+
+			<Component Id="confimc">
+				<File Name="confimc" Source="D:\IMCWEIGHT_S\myservice\myservice\confimc"/>
+			</Component>
+			
+			<Component Id="ProductComponent">
+				<File Id="JobServiceEXE"
+					  Checksum="yes"
+					  Source="$(var.myservice.TargetPath)"
+					  KeyPath="yes">
+					
+				</File>
+					
+
+
+					<ServiceInstall
+						   Id="ServiceInstaller"
+						   Type="ownProcess"
+						   Vital="yes"
+						   Name="IMC_weight"
+						   DisplayName="IMC weight"
+						   Description="IMC web weight"
+						   Start="auto"
+						   Account="LocalSystem"
+						   ErrorControl="critical"
+						   Interactive="no"
+						  
+						   >
+								<ServiceDependency Id="RPCSS"/>
+				</ServiceInstall>
+				
+				<ServiceControl Id="StartWFService" Name="IMC_weight" Start="install"  Stop="both" Remove="both" Wait="no" />
+
+				<fwrules:FirewallException Id="FwOpenPort"
+								Name="IMC_weight"
+								Protocol="tcp"
+								Port="5050"
+								Scope="any"  />
+			</Component>
+			
+		</ComponentGroup>
+	</Fragment>
+</Wix>
