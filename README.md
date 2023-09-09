@@ -1,2 +1,2 @@
 # myservice
-service HttpListener to rs232 or IP socket for communicate with weight devices
+service HttpListener to rs232 or IP socket for to communicate with weight devices
